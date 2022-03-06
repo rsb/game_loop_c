@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "constants.h"
 
+bool is_game_running = false;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
@@ -35,8 +36,53 @@ bool initialize_window(void) {
   return true;
 }
 
+void destroy_window() {
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
+}
+
+void setup() {
+
+}
+
+void process_input() {
+  SDL_Event event;
+  SDL_PollEvent(&event);
+
+  switch (event.type) {
+    case SDL_QUIT:
+      is_game_running = false;
+      break;
+    case SDL_KEYDOWN:
+      if (event.key.keysym.sym == SDLK_ESCAPE) {
+        is_game_running = false;
+      }
+    default: ;
+
+  }
+
+}
+
+void update() {
+
+}
+
+void render() {
+
+}
+
 int main() {
-  initialize_window();
-  printf("Game is running... \n");
+  is_game_running = initialize_window();
+
+  setup();
+
+  while(is_game_running) {
+    process_input();
+    update();
+    render();
+  }
+
+  destroy_window();
   return 0;
 }

@@ -4,6 +4,7 @@
 #include "constants.h"
 
 bool is_game_running = false;
+int last_frame_time = 0;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
@@ -75,7 +76,12 @@ void process_input() {
 }
 
 void update() {
+  while(!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TARGET_TIME));
 
+  last_frame_time = SDL_GetTicks();
+
+  ball.x += 2;
+  ball.y += 2;
 }
 
 void render() {
@@ -83,10 +89,10 @@ void render() {
   SDL_RenderClear(renderer);
 
   SDL_Rect ball_rect = {
-      ball.x,
-      ball.y,
-      ball.width,
-      ball.height
+      (int)ball.x,
+      (int)ball.y,
+      (int)ball.width,
+      (int)ball.height
   };
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

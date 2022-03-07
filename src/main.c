@@ -114,12 +114,31 @@ void update() {
   paddle.x += paddle.vel_x * delta_time;
   paddle.y += paddle.vel_y * delta_time;
 
-  // Check for ball collision with wall
-  if (ball.x <= 0 || ball.x + ball.width >= WINDOW_WIDTH) {
+  // If ball is lower than the left wall, force the position to be zero before
+  // flipping the velocity
+  if (ball.x <= 0) {
+    ball.x = 0;
     ball.vel_x = -ball.vel_x;
   }
 
+  // if ball is lower than left wall, force the position to be zero before
+  // flipping the velocity
   if (ball.y < 0) {
+    ball.y = 0;
+    ball.vel_y = -ball.vel_y;
+  }
+
+  // if the ball x plus its width is greater than the window width, force the
+  // position to be at the right of the screen
+  if (ball.x + ball.width > WINDOW_WIDTH) {
+    ball.x = WINDOW_WIDTH - ball.width;
+    ball.vel_x = -ball.vel_x;
+  }
+
+  // if the ball y plus its height is greater than window height, force the
+  // position to be at the bottom of the screen
+  if (ball.y + ball.height > WINDOW_HEIGHT) {
+    ball.y = WINDOW_HEIGHT - 40;
     ball.vel_y = -ball.vel_y;
   }
 

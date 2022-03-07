@@ -43,7 +43,7 @@ else()
 endif()
 
 
-file(COPY resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+#file(COPY resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # ------- Inc & Link ---- #
 

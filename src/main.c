@@ -80,17 +80,20 @@ void process_input() {
       is_game_running = false;
       break;
     case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_ESCAPE) {
+      if (event.key.keysym.sym == SDLK_ESCAPE)
         is_game_running = false;
-      }
+      if (event.key.keysym.sym == SDLK_LEFT)
+        paddle.vel_x = -400;
+      if (event.key.keysym.sym == SDLK_RIGHT)
+        paddle.vel_x = +400;
       break;
     case SDL_KEYUP:
-      // TODO:
+      if (event.key.keysym.sym == SDLK_LEFT)
+        paddle.vel_x = 0;
+      if (event.key.keysym.sym == SDLK_RIGHT)
+        paddle.vel_x = 0;
       break;
-    default: ;
-
   }
-
 }
 
 void update() {
@@ -108,6 +111,40 @@ void update() {
 
   ball.x += ball.vel_x * delta_time;
   ball.y += ball.vel_y * delta_time;
+  paddle.x += paddle.vel_x * delta_time;
+  paddle.y += paddle.vel_y * delta_time;
+
+  // Check for ball collision with wall
+  if (ball.x <= 0 || ball.x + ball.width >= WINDOW_WIDTH) {
+    ball.vel_x = -ball.vel_x;
+  }
+
+  if (ball.y < 0) {
+    ball.vel_y = -ball.vel_y;
+  }
+
+  // Check for ball collision with paddle
+  if (ball.y + ball.height >= paddle.y &&
+      ball.x + ball.width >= paddle.x &&
+      ball.x <= paddle.x + paddle.width) {
+    ball.vel_y = -ball.vel_y;
+  }
+
+  // Prevent the paddle from moving outside the boundaries of the window
+  if (paddle.x <= 0) {
+    paddle.x = 0;
+  }
+
+  if (paddle.x >= WINDOW_WIDTH - paddle.width) {
+    paddle.x = WINDOW_WIDTH - paddle.width;
+  }
+
+  // Check if game over
+  if (ball.y + ball.height >  WINDOW_HEIGHT) {
+    ball.x = WINDOW_WIDTH / 2;
+    ball.y = 0;
+  }
+
 }
 
 void render() {

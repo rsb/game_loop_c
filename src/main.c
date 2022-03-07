@@ -3,17 +3,20 @@
 #include <stdbool.h>
 #include "constants.h"
 
+// Global Variables
 bool is_game_running = false;
 int last_frame_time = 0;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-struct ball {
+struct game_object {
   float x;
   float y;
   float width;
   float height;
-} ball;
+  float vel_x;
+  float vel_y;
+} ball, paddle;
 
 bool initialize_window(void) {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -55,6 +58,17 @@ void setup() {
   ball.y = 20;
   ball.width = 15;
   ball.height = 15;
+  ball.vel_x = 300;
+  ball.vel_y = 300;
+
+  paddle.x = (WINDOW_WIDTH / 2) - (paddle.width / 2);
+  paddle.y = WINDOW_HEIGHT - 40;
+  paddle.width = 100;
+  paddle.height = 20;
+  paddle.vel_x = 0;
+  paddle.vel_y = 0;
+
+
 }
 
 void process_input() {
@@ -69,6 +83,10 @@ void process_input() {
       if (event.key.keysym.sym == SDLK_ESCAPE) {
         is_game_running = false;
       }
+      break;
+    case SDL_KEYUP:
+      // TODO:
+      break;
     default: ;
 
   }
@@ -88,8 +106,8 @@ void update() {
   last_frame_time = SDL_GetTicks();
 
 
-  ball.x += 70 * delta_time;
-  ball.y += 50 * delta_time;
+  ball.x += ball.vel_x * delta_time;
+  ball.y += ball.vel_y * delta_time;
 }
 
 void render() {
@@ -105,7 +123,18 @@ void render() {
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   if (SDL_RenderFillRect(renderer, &ball_rect) == -1) {
-    fprintf(stderr, "SDL_RenderFillRect failed: %s \n", SDL_GetError());
+    fprintf(stderr, "SDL_RenderFillRect failed for (ball_rect): %s \n", SDL_GetError());
+  }
+
+  SDL_Rect paddle_rect = {
+      (int)paddle.x,
+      (int)paddle.y,
+      (int)paddle.width,
+      (int)paddle.height
+  };
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  if (SDL_RenderFillRect(renderer, &paddle_rect) == -1) {
+    fprintf(stderr, "SDL_RenderFillRect failed for (paddle_rect): %s \n", SDL_GetError());
   }
 
   SDL_RenderPresent(renderer);
